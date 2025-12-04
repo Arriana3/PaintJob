@@ -1,103 +1,87 @@
-
-
 #include <iostream>
+#include <cmath>
+#include <iomanip>
 using namespace std;
 
 int getRooms()
 {
     int rooms;
-    cout << "how many rooms need painting ? : " << endl;
-    cin >> rooms;
-    if (rooms <= 1)
-    {
-        cout << "Invalid input. Number of rooms must be greater than 1." << endl;
-        cin >> rooms;
+    cout << "How many rooms need painting? : ";
+	cin >> rooms;
+    while (rooms <= 0){
+        cout << "Invalid input. Number of rooms must be greater than 0. Try again: ";
+		cin >> rooms;
     }
     return rooms;
 }
 
-double getSqft()
+int getSqft(int room)
 {
-    double sqft;
-    cout << "What is the Square footage of each room ? : " << endl;
-    cin >> sqft;
-    if (sqft <= 0)
-    {
-        cout << "Invalid input. Square footage must be greater than 0. Try again." << endl;
-       cin >> sqft;
+    int sqft;
+    cout << "What is the square footage of room " << room << "? : ";
+	cin >> sqft;
+    while (sqft <= 0)
+    { 
+        cout << "Invalid input. Square footage must be greater than 0. Try again: ";
+		cin >> sqft;
     }
     return sqft;
-
 }
+
 double getPaintCost()
 {
     double paintCost;
-    cout << "What is the cost of paint per gallon ? : " << endl;
-    cin >> paintCost;
-    if (paintCost <= 10)
+    cout << "What is the cost of paint per gallon? : ";
+	cin >> paintCost;
+	while (paintCost < 10)
     {
-        cout << "Invalid input. Paint cost must be greater than $10. Try again." << endl;
-        cin >> paintCost;
+        cout << "Invalid input. Paint cost must be greater than 10. Try again: ";
+		cin >> paintCost;
     }
     return paintCost;
 }
 
-double gallonsPerRoom(int sqft)
+    double gallonsForSqft(int totalSqft)
 {
-    double gallons;
-    gallons = sqft / 110;
-
-    return gallons;
-
-}
-double PaintCharge(double paintCost, double gallons)
-{
-    double totalPaintCost;
-    totalPaintCost = paintCost * gallons;
-    return totalPaintCost;
+    return  double (totalSqft) / 110.0;
 }
 
-double LaborCharge(int sqft)
+double paintCharge(double paintCostPerGallon, double gallons)
 {
-    double laborHours;
-    double laborCost;
-    laborHours = (sqft / 110) * 8;
-    laborCost = laborHours * 25;
-    return laborCost;
+    return paintCostPerGallon * gallons;
 }
 
-
+double laborCharge(int totalSqft)
+{
+    double laborHours = (double(totalSqft) / 110.0) * 8.0;
+    return laborHours * 25.0;
+}
 
 int main()
 {
-   
-    int rooms=getRooms();
-    double sqft = 0;
-    double total = 0;
-    double Paintcost = 0;
-	double GallonsNeeded = 0;
-    ;
-   for (int i = 0; i < rooms; i++)
-    {
-		double sqft = getSqft();
-        GallonsNeeded = gallonsPerRoom(sqft);
-        Paintcost = getPaintCost();
+    int rooms = getRooms();
+
+    int totalSqft = 0;
+    for (int i = 1; i <= rooms; ++i) {
+        totalSqft += getSqft(i);
     }
 
-    Paintcost = PaintCharge(Paintcost, GallonsNeeded);
-    double laborHours = 0;
-      double laborCharge = LaborCharge(sqft);
-		total += Paintcost + laborCharge;
+    double paintCostPerGallon = getPaintCost();
 
+    double gallonsNeeded = gallonsForSqft(totalSqft);
+   
 
+    double totalPaintCost = paintCharge(paintCostPerGallon, gallonsNeeded);
+    double totalLaborCost = laborCharge(totalSqft);
+    double laborHours = (double(totalSqft) / 110.0) * 8.0;
+   
+    cout << " Estimate for painting " << rooms << " rooms.\n";
+    cout << "Gallons of paint to purchase: " << round(gallonsNeeded) << "\n";
+    cout << "Number of labor hours required: " << round(laborHours) << "\n";
+ cout << fixed << setprecision(2);
+    cout << "Total cost of paint: $" << totalPaintCost << "\n";
+    cout << "Total cost of labor: $" << totalLaborCost << "\n";
+    cout << "Total cost of the paint job: $" << (totalPaintCost + totalLaborCost) << "\n";
 
-    
-
-    cout << "Estimate for Painting " << rooms << " rooms." << endl;
-    cout << "Gallons of Paint to be purchased : " << GallonsNeeded << endl;
-    cout << "Number of hours required to paint the rooms: " << laborHours << endl;
-    cout << "Total cost of paint : $" << Paintcost << endl;
-    cout << "Total cost of labor: $" << laborCharge << endl;
-    cout << "Total cost of the paint job : $" << total <<   endl;
     return 0;
 }
